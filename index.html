@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כמה שיחות את מפסידה בחודש? | המחשבון</title>
+<!-- TODO מדידה למיזם: GA4 + Clarity + Meta Pixel יירשמו עם חשבון המטא של המיזם -->
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#241610;
+    --bg2:#2e1d14;
+    --card:#3a2519;
+    --coral:#e0755c;
+    --coral-dark:#c95f48;
+    --cream:#f6efe7;
+    --muted:#c9b8a8;
+    --gold:#d9a441;
+    --green:#7bc9a3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Assistant',sans-serif}
+  body{background:var(--bg);color:var(--cream);line-height:1.6;padding-bottom:60px}
+  .wrap{max-width:520px;margin:0 auto;padding:0 20px}
+  header{padding:44px 0 8px;text-align:center}
+  .eyebrow{color:var(--gold);font-weight:700;letter-spacing:.5px;font-size:15px}
+  h1{font-size:30px;font-weight:800;line-height:1.25;margin:8px 0 10px}
+  .sub{color:var(--muted);font-size:16.5px}
+  .hero-formula{margin:26px 0 6px;background:var(--bg2);border:1px solid #4a2f1e;border-radius:16px;padding:18px 20px;font-size:15.5px}
+  .hero-formula b{color:var(--coral)}
+  .card{background:var(--card);border-radius:18px;padding:22px;margin-top:16px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+  .q{margin-bottom:22px}
+  .q:last-child{margin-bottom:8px}
+  .qlabel{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;font-size:17px;margin-bottom:10px}
+  .qval{color:var(--gold);font-weight:800;font-size:20px;white-space:nowrap}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:8px;border-radius:6px;background:linear-gradient(to left,var(--coral) 0%,var(--coral) 50%,#54341f 50%,#54341f 100%);outline:none;direction:rtl}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:26px;height:26px;border-radius:50%;background:var(--cream);border:4px solid var(--coral);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--cream);border:4px solid var(--coral);cursor:pointer}
+  .hint{color:var(--muted);font-size:13.5px;margin-top:6px}
+  .btn{display:block;width:100%;background:var(--coral);color:#fff;border:none;border-radius:14px;padding:17px;font-size:19px;font-weight:800;cursor:pointer;margin-top:18px;transition:background .2s}
+  .btn:active{background:var(--coral-dark)}
+  #result{display:none}
+  .big-number{font-size:44px;font-weight:800;color:var(--gold);line-height:1.1}
+  .big-label{color:var(--cream);font-weight:700;font-size:17px}
+  .breakdown{margin-top:14px;font-size:15.5px;color:var(--muted);border-top:1px solid #4a2f1e;padding-top:14px}
+  .breakdown b{color:var(--cream)}
+  .verdict{margin-top:16px;background:rgba(123,201,163,.1);border:1px solid rgba(123,201,163,.35);border-radius:12px;padding:14px 16px;font-size:16px}
+  .verdict b{color:var(--green)}
+  .how{margin-top:20px;font-size:15.5px;color:var(--muted)}
+  .how ol{padding-right:20px;margin-top:8px}
+  .how li{margin-bottom:6px}
+  .wa-cta{display:block;margin-top:14px;background:#25D366;color:#0e2415;border-radius:14px;padding:17px;text-align:center;font-size:19px;font-weight:800;text-decoration:none}
+  .skip{text-align:center;margin:22px 0 6px}
+  .skip a{color:var(--gold);font-weight:700;text-decoration:none;font-size:16px}
+  footer{text-align:center;color:#8a7563;font-size:13px;margin-top:36px;padding:0 20px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">✦ המחשבון של בעלות הסטודיו</div>
+    <h1>כמה כסף הולך לך לאיבוד על שיחות שלא נענו?</h1>
+    <p class="sub">40 שניות. 4 שאלות. המספר שלך, לא תיאוריה.</p>
+  </header>
+
+  <div class="hero-formula">
+    את יודעת את זה: לקוחה שמתקשרת בזמן שאת עם לקוחה — <b>לא ממתינה</b>. היא סוגרת אצל מי שכן ענתה. כמה זה עולה לך בכסף? בואי נספור.
+  </div>
+
+  <div class="card" id="calc">
+    <div class="q">
+      <div class="qlabel"><span>שיחות שנכנסות בשבוע בשעות שאת עם לקוחה</span><span class="qval" id="v1">15</span></div>
+      <input type="range" id="q1" min="5" max="60" value="15">
+      <div class="hint">הטלפונים שמצלצלים בדיוק כשהידיים תפוסות</div>
+    </div>
+    <div class="q">
+      <div class="qlabel"><span>כמה מהן את באמת מספיקה לענות או להחזיר</span><span class="qval" id="v2">7</span></div>
+      <input type="range" id="q2" min="0" max="60" value="7">
+      <div class="hint">בכנות. כולל ההחזרות של 22:00</div>
+    </div>
+    <div class="q">
+      <div class="qlabel"><span>מחיר טיפול ממוצע אצלך (₪)</span><span class="qval" id="v3">150</span></div>
+      <input type="range" id="q3" min="50" max="500" step="10" value="150">
+    </div>
+    <div class="q">
+      <div class="qlabel"><span>כמה פעמים בשנה לקוחה חוזרת אלייך</span><span class="qval" id="v4">10</span></div>
+      <input type="range" id="q4" min="2" max="24" value="10">
+    </div>
+    <button class="btn" onclick="calc()">ספרי לי כמה אני מפסידה</button>
+  </div>
+
+  <div class="card" id="result">
+    <div class="big-label">בערך כך זה נראה אצלך:</div>
+    <div class="big-number" id="monthly">₪—</div>
+    <div class="big-label" style="font-size:15px;color:var(--muted)">בורחים לך לפח בכל חודש</div>
+    <div class="breakdown" id="breakdown"></div>
+    <div class="verdict" id="verdict"></div>
+    <div class="how">
+      <b style="color:var(--cream)">איך זה ייראה כשפותרים את זה:</b>
+      <ol>
+        <li>משאירים מספר בוואטסאפ — לוקח חצי דקה</li>
+        <li>המזכירה מתקשרת אלייך עכשיו, כאילו שאת הלקוחה</li>
+        <li>שומעים איך היא עונה וסוגרת תור — ב-90 שניות</li>
+      </ol>
+      <div style="margin-top:10px">אם זה לא נשמע לך מדויק כמו המספר למעלה — לא מדברים על כסף בכלל.</div>
+    </div>
+    <a class="wa-cta" id="waBtn" href="#" target="_blank" rel="noopener">🔊 רוצה לשמוע את הדמו — כתבו לי בוואטסאפ</a>
+    <div class="skip"><a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">← לחזור למחשבון</a></div>
+  </div>
+
+  <div class="skip" id="skipTop">
+    <a href="#" id="waSkip" target="_blank" rel="noopener">דלגתי על המחשבון — פשוט תראו לי את הדמו ←</a>
+  </div>
+
+  <footer>
+    המזכירה הדיגיטלית של בעלות הסטודיו — עונה לכל שיחה, סוגרת את התור ביומן ומאשרת בוואטסאפ.<br>
+    הדמו חינמי וללא התחייבות.
+  </footer>
+</div>
+
+<script>
+function upd(){
+  document.getElementById('v1').textContent = document.getElementById('q1').value;
+  document.getElementById('v2').textContent = document.getElementById('q2').value;
+  document.getElementById('v3').textContent = '₪' + document.getElementById('q3').value;
+  document.getElementById('v4').textContent = document.getElementById('q4').value;
+}
+['q1','q2','q3','q4'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',upd);
+  el.addEventListener('input',()=>paintRange(el));
+});
+function paintRange(el){
+  const pct=(el.value-el.min)/(el.max-el.min)*100;
+  el.style.background='linear-gradient(to left,var(--coral) 0%,var(--coral) '+pct+'%,#54341f '+pct+'%,#54341f 100%)';
+}
+['q1','q2','q3','q4'].forEach(id=>paintRange(document.getElementById(id)));
+upd();
+
+function fmt(n){return '₪' + Math.round(n).toLocaleString('en-US').replace(/,/g,',');}
+
+function calc(){
+  const calls = +document.getElementById('q1').value;
+  const answered = +document.getElementById('q2').value;
+  const price = +document.getElementById('q3').value;
+  const visits = +document.getElementById('q4').value;
+
+  const missedWeek = Math.max(calls - answered, 0);
+  const missedMonth = missedWeek * 4.3;
+  const lostClients = missedMonth * 0.2; // שיעור המרה שמרני: 20% מהשיחות האבודות היו נסגרות
+  const monthlyLoss = lostClients * price * (visits / 12); // שווי לקוחה בחודש
+  const annualLoss = monthlyLoss * 12;
+
+  document.getElementById('monthly').textContent = fmt(monthlyLoss);
+  document.getElementById('breakdown').innerHTML =
+    'בחודש מפסידות לך כ-<b>' + Math.round(missedMonth) + ' שיחות</b>. ' +
+    'אפילו אם רק <b>20%</b> מהן היו נסגרות — אלה <b>' + lostClients.toFixed(1) + ' לקוחות</b> שהלכו. ' +
+    'לפחות בשנה זה כבר <b>' + fmt(annualLoss) + '</b>.';
+
+  const verdict = document.getElementById('verdict');
+  if (monthlyLoss >= 600){
+    verdict.innerHTML = 'מנוי המזכירה עולה <b>299₪ בחודש</b> — כלומר היא מכסה את עצמה כבר מ-<b>לקוחה אחת</b> שהיא סוגרת. כל מה שמעבר — רווח.';
+  } else if (monthlyLoss >= 299){
+    verdict.innerHTML = 'את מפסידה יותר ממה שהמזכירה עולה. ההפרש הזה נשאר אצלך כל חודש.';
+  } else {
+    verdict.innerHTML = 'גם אצלך הכסף בורח — בקצב של <b>' + fmt(monthlyLoss) + '</b> בחודש. שווה לשמוע את הדמו לפני שמחליטים.';
+  }
+
+  const msg = encodeURIComponent('היי! עשיתי את המחשבון (' + fmt(monthlyLoss) + ' בחודש לפי החישוב שלי). אשמח לשמוע את הדמו של המזכירה 🙋‍♀️');
+  const wa = 'https://wa.me/972555631717?text=' + msg;
+  document.getElementById('waBtn').href = wa;
+  document.getElementById('waSkip').href = 'https://wa.me/972555631717?text=' + encodeURIComponent('היי! רוצה לשמוע את הדמו של המזכירה 🙋‍♀️');
+
+  document.getElementById('result').style.display='block';
+  document.getElementById('calc').style.display='none';
+  document.getElementById('skipTop').style.display='none';
+  window.scrollTo({top:document.getElementById('result').offsetTop - 12, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
