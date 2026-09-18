@@ -107,7 +107,7 @@ body.editing{padding-bottom:120px}
     <button onclick="go('a-clients',this)">לקוחות</button>
     <button onclick="go('a-calls',this)">שיחות</button>
     <button onclick="go('a-leads',this)">לידים</button>
-    <button onclick="go('a-agent',this)">כללי סוכן</button>
+    <button onclick="go('a-voicelab',this)">מעבדת קול</button><button onclick="go('a-agent',this)">כללי סוכן</button>
     <button onclick="go('a-money',this)">כספים</button>
   </div>
   <div class="nav" id="navClient" style="display:none">
@@ -287,6 +287,49 @@ body.editing{padding-bottom:120px}
     <div class="row-line"><span class="r-label">חיוב הבא</span><span class="r-val">1.10 · 3 מנויים</span></div>
     <div class="row-line"><span class="r-label">יעד שלב הוולידציה</span><span class="r-val">4 לקוחות = 1,196₪ MRR</span></div>
   </div>
+
+<section id="a-voicelab" style="display:none">
+  <h2 class="scr-title">מעבדת הקול</h2>
+  <p class="scr-sub" data-e>כל שכבה נשלטת: תסריט, קול, מקצב, פילרים, הפסקות, סאונד קו, רקע. שומרים → שולחים להפקה → מקבלים אודיו.</p>
+
+  <div class="card">
+    <div style="font-weight:800;font-size:15px;margin-bottom:8px" data-e>התסריט (טרנסקריפט)</div>
+    <div class="hint" style="text-align:right;margin-bottom:8px" data-e>כל שורה = משפט. ההפסקה בין המשפטים נקבעת בהמשך. אפשר לשבור משפט כמה שרוצים — ככה שולטים במקצב המדויק.</div>
+    <textarea id="lab_script" style="width:100%;background:var(--bg2);border:1px solid #4a2f1e;border-radius:10px;color:var(--cream);padding:10px;font-size:13.5px;font-family:inherit;line-height:1.7;resize:vertical" rows="7"></textarea>
+  </div>
+
+  <div class="card">
+    <div style="font-weight:800;font-size:15px;margin-bottom:4px" data-e>קול ומקצב</div>
+    <div class="setting"><div class="s-l" data-e>קול<small>הקולות העבריים הזמינים כרגע</small></div>
+      <select id="lab_voice" style="background:var(--bg2);color:var(--cream);border:1px solid #4a2f1e;border-radius:8px;padding:6px 10px;font-family:inherit;font-size:13px">
+        <option value="he-IL-HilaNeural">הילה — חם, נשי (ברירת מחדל)</option>
+        <option value="he-IL-AvriNeural">אברי — גברי, רגוע</option>
+        <option value="clone">קול משובט — ElevenLabs (בהמתנה לחשבון)</option>
+      </select></div>
+    <div class="setting"><div class="s-l" data-e>מקצב דיבור<small>שלילי = איטי ורגוע, חיובי = מהיר ואנרגטי</small></div>
+      <div style="display:flex;align-items:center;gap:8px"><input type="range" id="lab_rate" min="-20" max="20" value="0" step="5" style="width:120px" oninput="document.getElementById('lab_rate_v').textContent=this.value+'%'"><span id="lab_rate_v" style="font-size:13px;font-weight:800;color:var(--gold);min-width:44px">0%</span></div></div>
+    <div class="setting"><div class="s-l" data-e>הפסקות בין משפטים<small>נשימה ומחשבה</small></div>
+      <select id="lab_pause" style="background:var(--bg2);color:var(--cream);border:1px solid #4a2f1e;border-radius:8px;padding:6px 10px;font-family:inherit;font-size:13px">
+        <option value="0.3">קצרות — עריכה מהירה</option>
+        <option value="0.7" selected>בינוניות — בני אדם (ברירת מחדל)</option>
+        <option value="1.2">ארוכות — ממש מחשבה</option>
+      </select></div>
+  </div>
+
+  <div class="card">
+    <div style="font-weight:800;font-size:15px;margin-bottom:4px" data-e>שכבות אנושיות</div>
+    <div class="setting"><div class="s-l" data-e>פילרים<small>אפשר לערוך את סט הפילרים — מה שהיא "אומרת סתם"</small></div><div class="sw on" onclick="tg(this);document.getElementById('lab_fillers_row').style.display=this.classList.contains('on')?'flex':'none'"><i></i></div></div>
+    <div class="setting" id="lab_fillers_row" style="display:flex"><input id="lab_fillers" value="כן, רגע... / אממ... / בודקת עכשיו" style="flex:1;background:var(--bg2);border:1px solid #4a2f1e;border-radius:8px;color:var(--cream);padding:8px;font-family:inherit;font-size:13px"></div>
+    <div class="setting"><div class="s-l" data-e>סאונד קו טלפון<small>סינון תדרים כמו שידור סלולרי + רעש קו</small></div><div class="sw on" onclick="tg(this)"><i></i></div></div>
+    <div class="setting"><div class="s-l" data-e>רקע / אמביינס<small>סאונד סלון עדין מתחת לקול — יופעל כשנעלה דגימה</small></div><div class="sw" onclick="tg(this)"><i></i></div></div>
+  </div>
+
+  <div class="card">
+    <button class="btn" onclick="saveLab()" data-e>שמירת ההגדרות</button>
+    <button class="btn ghost" onclick="buildLabRequest()" data-e>הכנת בקשת הפקה לעזרא</button>
+    <textarea id="lab_output" readonly style="display:none;width:100%;margin-top:10px;background:var(--bg2);border:1px solid #4a2f1e;border-radius:10px;color:var(--muted);padding:10px;font-size:12px;font-family:inherit;line-height:1.6" rows="6"></textarea>
+    <div class="hint" data-e>הלופאל כרגע: מגדירים כאן → מעתיקים את בקשת ההפקה → שולחים לי בוואטסאפ → מקבלים אודיו. בפרודקשן (חשבון ElevenLabs) הכפתור הזה יהפוך ל"השמעה מיידית" — בלעדיי.</div>
+  </div>
 </section>
 
 <!-- ============ מצב לקוחה ============ -->
@@ -417,6 +460,55 @@ function tg(el){ el.classList.toggle('on'); }
   });
   const saved=JSON.parse(localStorage.getItem(KEY)||'{}');
   Object.keys(saved).forEach(i=>{ if(els[i]) els[i].innerHTML=saved[i]; });
+
+/* מעבדת הקול */
+const LAB_DEFAULTS = {
+  script: "שלום ל'מייה ניילס, מה נחמד לשמוע ממך!\nכן, רגע... את רוצה לקבוע תור, נכון?\nבודקת עכשיו מה פנוי לך.\nאממ... יש לי מקום מחר בעשר בבוקר, או אם יותר נוח לך בשתיים אחר הצהריים.\nמעולה, אז סידרתי לך תור למחר בעשר בבוקר.\nאני שולחת לך עכשיו אישור בוואטסאפ, בסדר?\nיום נפלא, ביי!",
+};
+function labState(){
+  const sws = document.querySelectorAll('#a-voicelab .sw');
+  return {
+    script: document.getElementById('lab_script').value,
+    voice: document.getElementById('lab_voice').value,
+    rate: document.getElementById('lab_rate').value,
+    pause: document.getElementById('lab_pause').value,
+    fillers_on: sws[0].classList.contains('on'),
+    fillers: document.getElementById('lab_fillers').value,
+    phone_on: sws[1].classList.contains('on'),
+    bg_on: sws[2].classList.contains('on')
+  };
+}
+function saveLab(){
+  localStorage.setItem('voicelab', JSON.stringify(labState()));
+  const b = document.querySelector('#a-voicelab .btn');
+  const t = b.textContent; b.textContent = '✓ נשמר'; setTimeout(()=>b.textContent=t, 1500);
+}
+function buildLabRequest(){
+  const s = labState();
+  const vnames = {'he-IL-HilaNeural':'הילה','he-IL-AvriNeural':'אברי','clone':'קול משובט'};
+  const lines = s.script.split('\n').filter(l=>l.trim()).map((l,i)=>(i+1)+'. '+l).join('\n');
+  const txt = 'בקשת הפקה ממעבדת הקול:\nקול: '+vnames[s.voice]+' | מקצב: '+s.rate+'% | הפסקות: '+s.pause+' שנ\'\nפילרים: '+(s.fillers_on?('כן ('+s.fillers+')'):'לא')+' | קו טלפון: '+(s.phone_on?'כן':'לא')+' | רקע: '+(s.bg_on?'כן':'לא')+'\n\nתסריט:\n'+lines;
+  const out = document.getElementById('lab_output');
+  out.style.display = 'block'; out.value = txt;
+  out.select(); try{document.execCommand('copy'); out.insertAdjacentHTML('afterend','');}catch(e){}
+  const b = document.querySelectorAll('#a-voicelab .btn.ghost')[0];
+  const t = b.textContent; b.textContent = '✓ הועתק — שלח לי בוואטסאפ'; setTimeout(()=>b.textContent=t, 2000);
+}
+(function(){
+  const saved = JSON.parse(localStorage.getItem('voicelab')||'null');
+  document.getElementById('lab_script').value = (saved && saved.script) || LAB_DEFAULTS.script;
+  if(saved){
+    document.getElementById('lab_voice').value = saved.voice;
+    document.getElementById('lab_rate').value = saved.rate;
+    document.getElementById('lab_rate_v').textContent = saved.rate+'%';
+    document.getElementById('lab_pause').value = saved.pause;
+    document.getElementById('lab_fillers').value = saved.fillers || 'כן, רגע... / אממ... / בודקת עכשיו';
+    const sws = document.querySelectorAll('#a-voicelab .sw');
+    sws[0].classList.toggle('on', saved.fillers_on); sws[1].classList.toggle('on', saved.phone_on); sws[2].classList.toggle('on', saved.bg_on);
+    document.getElementById('lab_fillers_row').style.display = saved.fillers_on ? 'flex' : 'none';
+  }
+})();
+
 })();
 </script>
 </body>
