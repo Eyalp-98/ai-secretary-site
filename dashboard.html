@@ -444,23 +444,6 @@ function go(id, btn){
 }
 function tg(el){ el.classList.toggle('on'); }
 
-/* מצב עריכה חי — ?edit=1 */
-(function(){
-  if(!location.search.includes('edit=1')) return;
-  document.body.classList.add('editing');
-  const KEY='dash_edits_'+location.pathname;
-  const els=[...document.querySelectorAll('[data-e]')];
-  els.forEach((el,i)=>{
-    el.contentEditable='true';
-    el.dataset.ei=i;
-    el.addEventListener('input',()=>{
-      const s=JSON.parse(localStorage.getItem(KEY)||'{}');
-      s[i]=el.innerHTML; localStorage.setItem(KEY,JSON.stringify(s));
-    });
-  });
-  const saved=JSON.parse(localStorage.getItem(KEY)||'{}');
-  Object.keys(saved).forEach(i=>{ if(els[i]) els[i].innerHTML=saved[i]; });
-
 /* מעבדת הקול */
 const LAB_DEFAULTS = {
   script: "שלום ל'מייה ניילס, מה נחמד לשמוע ממך!\nכן, רגע... את רוצה לקבוע תור, נכון?\nבודקת עכשיו מה פנוי לך.\nאממ... יש לי מקום מחר בעשר בבוקר, או אם יותר נוח לך בשתיים אחר הצהריים.\nמעולה, אז סידרתי לך תור למחר בעשר בבוקר.\nאני שולחת לך עכשיו אישור בוואטסאפ, בסדר?\nיום נפלא, ביי!",
@@ -508,6 +491,24 @@ function buildLabRequest(){
     document.getElementById('lab_fillers_row').style.display = saved.fillers_on ? 'flex' : 'none';
   }
 })();
+
+/* מצב עריכה חי — ?edit=1 */
+(function(){
+  if(!location.search.includes('edit=1')) return;
+  document.body.classList.add('editing');
+  const KEY='dash_edits_'+location.pathname;
+  const els=[...document.querySelectorAll('[data-e]')];
+  els.forEach((el,i)=>{
+    el.contentEditable='true';
+    el.dataset.ei=i;
+    el.addEventListener('input',()=>{
+      const s=JSON.parse(localStorage.getItem(KEY)||'{}');
+      s[i]=el.innerHTML; localStorage.setItem(KEY,JSON.stringify(s));
+    });
+  });
+  const saved=JSON.parse(localStorage.getItem(KEY)||'{}');
+  Object.keys(saved).forEach(i=>{ if(els[i]) els[i].innerHTML=saved[i]; });
+
 
 })();
 </script>
